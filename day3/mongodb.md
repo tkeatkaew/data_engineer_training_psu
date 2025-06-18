@@ -59,3 +59,11 @@ db.getCollection('sales').aggregate([
 ]);
 
 ```
+
+
+// Insert a few documents into the sales collection.
+db.getCollection('sales').insertMany([
+  { 'item': 'abc', 'price': 10, 'quantity': 2, 'date': new Date('2025-06-18T08:00:00Z') },
+  { 'item': 'jkl', 'price': 20, 'quantity': 1, 'date': new Date('2025-06-18T09:00:00Z') },
+]);
+
