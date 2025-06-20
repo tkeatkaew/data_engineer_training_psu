@@ -1,0 +1,2 @@
+[psu_de]
+dash ansible_host=host.docker.internal ansible_port=2222 ansible_ssh_user=psu ansible_ssh_pass=coe ansible_become_pass=coe

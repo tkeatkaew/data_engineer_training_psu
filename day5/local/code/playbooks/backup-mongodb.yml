@@ -1,0 +1,29 @@
+- name: Backup MongoDB and Setup System
+  hosts: dash
+  become: yes
+  vars:
+    current_date_format: "{{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}-{{ ansible_date_time.hour }}{{ ansible_date_time.minute }}"
+  tasks:
+    - name: Ensure backup directory exists
+      ansible.builtin.file:
+        path: /home/psu/backups
+        state: directory
+
+    - name: Mongo Backup
+      ansible.builtin.shell: >
+        mongodump --uri=mongodb://admin:dangerouspasswd@mongodb:27017/environmentdb?authSource=admin --archive --gzip > /home/psu/backups/environmentdb-{{ current_date_format }}.gz
+      args:
+        chdir: /home/psu/backups
+
+    - name: Copy backup file to local machine
+      ansible.builtin.fetch:
+        src: /home/psu/backups/environmentdb-{{ current_date_format }}.gz
+        dest: /home/psu/backups/
+        flat: yes
+
+    - name: Remove backup file from remote host
+      ansible.builtin.file:
+        path: /home/psu/backups/environmentdb-{{ current_date_format }}.gz
+        state: absent
+
+

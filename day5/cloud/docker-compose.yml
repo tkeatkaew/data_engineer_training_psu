@@ -1,0 +1,51 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: cloud-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: dangerouspasswd
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - default
+
+  acquisition:
+    build: .
+    container_name: cloud-acquisition
+    env_file:
+      - .env
+    networks:
+      - default
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    command: /venv/bin/python -u /app/psu_de/acquisition.py
+
+  dash:
+    build: .
+    container_name: cloud-dash
+    ports:
+      - "8050:8050"
+      - "2222:22"
+    env_file:
+      - .env
+    networks:
+      - default
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    command: /venv/bin/python -u /app/psu_de/dashapp.py
+
+volumes:
+  mongodb_data:
+
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.10.0/24

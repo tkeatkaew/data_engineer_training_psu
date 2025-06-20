@@ -1,0 +1,21 @@
+services:
+  backup:
+    build: .
+    container_name: backup
+    # user: "1000:1000"
+    volumes:
+      - ./code:/home/psu/code
+      - ./backups:/home/psu/backups
+    restart: unless-stopped
+    networks:
+      - default
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.20.0/24

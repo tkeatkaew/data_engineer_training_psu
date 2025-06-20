@@ -1,0 +1,12 @@
+---
+- name: Hello World Playbook
+  hosts: psu_de
+  # gather_facts: true
+  tasks:
+    - name: Display hello world message
+      debug:
+        msg: "Hello World! Ansible is working correctly."
+
+    - name: Show current date and time on remote host
+      debug:
+        msg: "Current date and time on remote host: {{ ansible_date_time.iso8601 }}"
